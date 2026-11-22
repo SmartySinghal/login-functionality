@@ -2,7 +2,8 @@
 const express = require('express');      // web server
 const jwt = require('jsonwebtoken');     // create and verify JWT tokens
 const cors = require('cors');            // allow Angular (port 4200) to call this API (port 3000)
-const bcrypt = require('bcrypt');        // hash and compare passwords          
+const bcrypt = require('bcrypt');        // hash and compare passwords
+const path = require('path');            // build file paths for the Angular build folder
 
 // 2. Create the app and set it up
 const app = express();
@@ -59,6 +60,13 @@ app.get('/api/profile', verifyToken, (req, res) => {
   res.json(req.user);                                      // the decoded token data
 });
 
-// 8. Start the server
-app.get('/', (req, res) => res.send('JWT Auth API is running'));
-app.listen(3001, () => console.log('API running on http://localhost:3001'));
+// 8. Serve the built Angular app (created by "npm run build")
+const angularDist = path.join(__dirname, '..', 'dist', 'login-app', 'browser');
+app.use(express.static(angularDist));
+
+// Any other URL (/login, /dashboard, ...) gets index.html so Angular's router handles it
+app.use((req, res) => res.sendFile(path.join(angularDist, 'index.html')));
+
+// 9. Start the server (hosting services like Render set PORT; locally it is 3001)
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

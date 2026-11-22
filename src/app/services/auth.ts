@@ -5,7 +5,7 @@ import { tap } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private http = inject(HttpClient);
-  private api = 'http://localhost:3001/api';
+  private api = '/api';   // relative: works locally (via proxy) and when hosted
 
   login(email: string, password: string) {
     return this.http.post<{ token: string }>(`${this.api}/login`, { email, password })
