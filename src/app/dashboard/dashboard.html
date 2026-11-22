@@ -1,0 +1,8 @@
+<h2>Dashboard</h2>
+@if (profile(); as p) {
+  <p>Welcome, {{ p.name }} ({{ p.email }})</p>
+  <pre>{{ p | json }}</pre>
+} @else {
+  <p>Loading...</p>
+}
+<button (click)="logout()">Logout</button>
